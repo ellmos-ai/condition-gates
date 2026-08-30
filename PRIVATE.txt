@@ -1,0 +1,10 @@
+GATE: closed
+SCOPE: private-repository
+CREATED: 2026-08-30 Europe/Berlin
+TICKET: T-20260830-676416844
+
+This repository must remain private. Do not make it public, create a public
+mirror, or publish a package while this file exists.
+
+Local development and pushes to the private repository are allowed.
+Removal or public-release approval: user only.

@@ -1,0 +1,51 @@
+{
+  "schema": "ellmos.module.v2",
+  "id": "condition-gates",
+  "display_name": "condition-gates",
+  "version": "0.1.1",
+  "category": "meta",
+  "kind": "service",
+  "status": "development",
+  "visibility": "internal",
+  "description": "Bedingungen als nachprüfbare, sessionübergreifende Gates: Ein Teilschritt bleibt gesperrt, bis seine Bedingung durch eine Werkzeugabfrage belegt erfüllt ist. Nutzt ein vorhandenes Gedächtnis (USMC), wenn vorhanden, und speichert sonst selbst in einer eigenen SQLite-Datei.",
+  "package": null,
+  "entrypoints": {
+    "cli": "python -m condition_gates",
+    "python": "condition_gates.GateBook"
+  },
+  "provides": [
+    "orchestration.gating",
+    "orchestration.precondition",
+    "workflow.blocker.tracking"
+  ],
+  "requires": [],
+  "optional": [
+    "memory.usmc",
+    "control.locks"
+  ],
+  "conflicts": [],
+  "surfaces": [
+    "cli",
+    "library"
+  ],
+  "profiles": [],
+  "state": {
+    "location": "user-home",
+    "ownership": "module"
+  },
+  "boundaries": {
+    "data": "user-local",
+    "network": "none",
+    "platforms": [
+      "windows",
+      "macos",
+      "linux"
+    ]
+  },
+  "source_of_truth": {
+    "type": "git-repository",
+    "path": ".",
+    "repository": "https://github.com/ellmos-ai/condition-gates"
+  },
+  "adapters": []
+}
