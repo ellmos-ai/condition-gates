@@ -4,8 +4,10 @@
 import json
 import tempfile
 from pathlib import Path
+
 import pytest
 
+from condition_gates.cli import main
 from condition_gates.core import GateBook, GateError
 from condition_gates.store import (
     DEFAULT_USMC_AGENT,
@@ -14,9 +16,7 @@ from condition_gates.store import (
     OPEN,
     SqliteStore,
     UsmcStore,
-    open_store,
 )
-from condition_gates.cli import main, build_parser
 
 
 @pytest.fixture
@@ -124,11 +124,12 @@ def test_usmc_store_default_is_provider_neutral(monkeypatch):
     assert UsmcStore().agent == DEFAULT_USMC_AGENT == "condition-gates"
 
 
-def test_cli_commands(temp_db, capsys):
+def test_cli_plain_commands_name_backend(temp_db, capsys):
     # Doctor command
     ret = main(["--backend", "sqlite", "--db", temp_db, "doctor"])
     assert ret == 0
     captured = capsys.readouterr()
+    assert "Backend: sqlite" in captured.out
     assert "sqlite-Fallback" in captured.out
     assert "immer verfügbar" in captured.out
 
@@ -136,43 +137,87 @@ def test_cli_commands(temp_db, capsys):
     ret = main(["--backend", "sqlite", "--db", temp_db, "open", "Bedingung 1", "--blocks", "task_x", "--proof", "tool_y", "--id", "g10"])
     assert ret == 0
     captured = capsys.readouterr()
+    assert "Backend: sqlite" in captured.out
     assert "Gate g10 gesetzt" in captured.out
 
     # List gates
     ret = main(["--backend", "sqlite", "--db", temp_db, "list"])
     assert ret == 0
     captured = capsys.readouterr()
+    assert "Backend: sqlite" in captured.out
     assert "g10" in captured.out
     assert "offen" in captured.out
-
-    # List JSON
-    ret = main(["--backend", "sqlite", "--db", temp_db, "list", "--json"])
-    assert ret == 0
-    captured = capsys.readouterr()
-    data = json.loads(captured.out)
-    assert len(data) == 1
-    assert data[0]["gate_id"] == "g10"
 
     # Meet gate
     ret = main(["--backend", "sqlite", "--db", temp_db, "meet", "g10", "--evidence", "Confirmed by tool_y"])
     assert ret == 0
     captured = capsys.readouterr()
+    assert "Backend: sqlite" in captured.out
     assert "Gate g10 ERFÜLLT" in captured.out
 
     # Drop gate (create g11 first)
     main(["--backend", "sqlite", "--db", temp_db, "open", "Bedingung 2", "--id", "g11"])
+    capsys.readouterr()
     ret = main(["--backend", "sqlite", "--db", temp_db, "drop", "g11", "--reason", "Test reason"])
     assert ret == 0
     captured = capsys.readouterr()
+    assert "Backend: sqlite" in captured.out
     assert "Gate g11 VERWORFEN" in captured.out
 
 
-def test_cli_exit_codes(temp_db):
+def test_cli_json_separates_backend_metadata_from_payload(temp_db, capsys):
+    def invoke(*args):
+        assert main(["--backend", "sqlite", "--db", temp_db, *args, "--json"]) == 0
+        return json.loads(capsys.readouterr().out)
+
+    doctor = invoke("doctor")
+    assert doctor["meta"]["backend"] == "sqlite"
+    assert set(doctor) == {"meta", "diagnostics"}
+
+    opened = invoke("open", "Bedingung JSON", "--id", "g20")
+    assert opened["meta"]["backend"] == "sqlite"
+    assert opened["gate"]["gate_id"] == "g20"
+
+    listed = invoke("list")
+    assert listed["meta"]["backend"] == "sqlite"
+    assert [gate["gate_id"] for gate in listed["gates"]] == ["g20"]
+
+    met = invoke("meet", "g20", "--evidence", "Werkzeugbeleg")
+    assert met["meta"]["backend"] == "sqlite"
+    assert met["gate"]["status"] == MET
+
+    invoke("open", "Bedingung zum Verwerfen", "--id", "g21")
+    dropped = invoke("drop", "g21", "--reason", "hinfällig")
+    assert dropped["meta"]["backend"] == "sqlite"
+    assert dropped["gate"]["status"] == DROPPED
+
+
+def test_cli_json_reports_the_selected_usmc_backend(monkeypatch, capsys):
+    import condition_gates.cli as cli
+
+    store = UsmcStore(agent="test-agent")
+    monkeypatch.setattr(store, "load", lambda: {})
+    monkeypatch.setattr(cli, "open_store", lambda **kwargs: store)
+
+    assert cli.main(["doctor", "--json"]) == 0
+    document = json.loads(capsys.readouterr().out)
+    assert document["meta"] == {
+        "backend": "usmc",
+        "backend_description": "USMC (agent=test-agent)",
+    }
+
+
+def test_cli_exit_codes_name_backend(temp_db, capsys):
     # Unknown gate meet -> exit code 2
     ret = main(["--backend", "sqlite", "--db", temp_db, "meet", "g999", "--evidence", "some evidence"])
     assert ret == 2
+    assert "Backend: sqlite" in capsys.readouterr().err
 
     # Validation error (meet without evidence) -> exit code 1
     main(["--backend", "sqlite", "--db", temp_db, "open", "Bedingung 3", "--id", "g12"])
-    ret = main(["--backend", "sqlite", "--db", temp_db, "meet", "g12"])
+    capsys.readouterr()
+    ret = main(["--backend", "sqlite", "--db", temp_db, "meet", "g12", "--json"])
     assert ret == 1
+    error = json.loads(capsys.readouterr().err)
+    assert error["meta"]["backend"] == "sqlite"
+    assert "error" in error
