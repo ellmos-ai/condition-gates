@@ -34,9 +34,9 @@ sagt jede Ausgabe; `doctor` zeigt es explizit.
 Erzwingen lässt sich alles:
 
 ```
-CONDITION_GATES_BACKEND = auto | usmc | sqlite
-CONDITION_GATES_DB      = <pfad>       (nur sqlite)
-CONDITION_GATES_AGENT   = <agent-id>   (nur USMC; Standard: condition-gates)
+CONDITION_GATES_BACKEND=sqlite
+CONDITION_GATES_DB=<path>       # sqlite only
+CONDITION_GATES_AGENT=<agent-id>   # USMC only; default: condition-gates
 ```
 
 ## Append-only
@@ -49,14 +49,32 @@ samt Evidenz bleibt lesbar.
 ## CLI
 
 ```bash
-python -m condition_gates doctor                     # Backend-Erkennung + Bestand
-python -m condition_gates list [--all] [--json]      # Default: nur offene
-python -m condition_gates open "<bedingung>" --blocks "<was gesperrt ist>" --proof "<belegweg>"
-python -m condition_gates meet <id> --evidence "<Belegtext aus der Werkzeugabfrage>"
-python -m condition_gates drop <id> --reason "<warum hinfällig>"
+python -m condition_gates doctor [--json]            # backend detection + inventory
+python -m condition_gates list [--all] [--json]      # default: open ones only
+python -m condition_gates open "<condition>" --blocks "<what is blocked>" --proof "<proof path>" [--json]
+python -m condition_gates meet <id> --evidence "<proof text from the tool query>" [--json]
+python -m condition_gates drop <id> --reason "<why it is moot>" [--json]
 ```
 
 Exit-Codes: `0` ok · `1` fachlicher Fehler (z. B. fehlende Evidenz) · `2` Gate nicht gefunden.
+
+## Maschinenlesbare Ausgabe
+
+Jeder Befehl akzeptiert `--json`. Die Backend-Metadaten stehen immer getrennt an derselben
+Stelle; Befehlsdaten liegen unter `gates`, `gate`, `diagnostics` oder `error`:
+
+```json
+{
+  "meta": {
+    "backend": "sqlite",
+    "backend_description": "SQLite (<path>)"
+  },
+  "gates": []
+}
+```
+
+Erfolgreiches JSON wird nach stdout geschrieben; JSON-Fehler gehen nach stderr und behalten
+die dokumentierten Exit-Codes bei.
 
 ## Python
 

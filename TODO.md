@@ -1,5 +1,9 @@
 # TODO — condition-gates
 
+## Aktueller Prüfstand
+
+Stand 2026-09-05 · Version 0.1.1 · 10 Tests bestanden · Ruff und `compileall` sauber.
+
 ## Erledigt
 
 - [x] **2026-08-14 (P-006 Sprachzug — Stufe 1 Core erreicht, DE+EN):**
@@ -43,3 +47,59 @@
       (`control.locks`), nicht als Eigenbau im Modul.
 - [ ] Optionaler MCP-Adapter (`surfaces: mcp-adapter`), falls Gates auch fremden Agenten ohne
       CLI-Zugriff offenstehen sollen.
+
+## TASKWRITER-Review 2026-09-05
+
+Presentation `af350720-ef8e-4c2c-807f-01b098abb078`; gelesen wurden README.md,
+README_de.md, TODO.md, pyproject.toml, PRIVATE.txt, LICENSE,
+ellmos-module.v2.json, gates.py, alle fünf Paketmodule und die Testsuite.
+`main` war sauber und exakt auf `origin/main` (`2c48a7f`). Das Repository ist
+laut `PRIVATE.txt` und Live-Remote privat; Public Release, Package-Publish,
+Commit und Push waren nicht Teil dieses Reviews.
+
+`pytest -q` meldete 8 passed, `compileall` lief ohne Fehler. `ruff check .`
+schlug mit drei F401-Befunden fehl. Ein CLI-Smoke mit SQLite zeigte außerdem,
+dass `list --json` kein Backend ausweist und `drop` ein bereits erfülltes Gate
+noch akzeptiert. `condition_gates.__version__` ist 0.1.0, während Paket und
+Manifest 0.1.1 ausweisen.
+
+### Neue, formalisierte Aufgaben
+
+- [x] **TASKPLAN 201 — Lint-Baseline repariert und Versionsmetadaten angeglichen**
+      (high, easy, local). Drei ungenutzte Imports entfernen/klären, den
+      Runtime-Versionswert synchronisieren und die veraltete 7/7-Statuszahl
+      erst nach neuer Messung aktualisieren.
+- [ ] **TASKPLAN 202 — Gate-Zustandsübergänge terminal und Zeitstempel
+      zonenbewusst machen** (high, medium, local). Nur offene Gates dürfen
+      einmal geschlossen oder verworfen werden; neue Zeitstempel müssen
+      UTC-ISO-8601 mit Offset tragen.
+- [x] **TASKPLAN 203 — Backend-Nachweis in allen CLI-Ausgaben und JSON stabil
+      gemacht** (medium, easy, local). Plain- und JSON-Ausgaben nennen das
+      Backend jetzt durchgängig; die READMEs dokumentieren den getrennten
+      `meta`-Bereich und gültige Shell-Assignments.
+- [ ] **TASKPLAN 204 — USMC-Transportargumente und Gate-Inhalte verlustfrei
+      absichern** (high, medium, local). Shell-/argv-Verhalten und die
+      pipe-separierte Freitextkodierung brauchen Mock-/Round-trip-Belege, ohne
+      SQLite-Fallback oder PRIVATE-Gate zu ändern.
+
+### Offene Entscheidungen
+
+- Für TASKPLAN 202 ist eine Reopen-Funktion ausdrücklich nicht vorgesehen und
+  würde eine separate Nutzerentscheidung erfordern.
+- TASKPLAN 204 braucht die tatsächlich unterstützte USMC-CLI-Signatur; ohne
+  erreichbares USMC bleibt die Prüfung auf Mock- und SQLite-Evidenz begrenzt.
+
+### Review-Log
+
+- Keine Aufgabe ausgeführt; keine Veröffentlichung, Registrierung, Löschung,
+  Commit- oder Push-Aktion autorisiert.
+- Taskplan-Register synchronisiert: IDs 201–204; alle mit Ergebnis, Quelle,
+  Herleitung, Abnahme, Verifikation, Abhängigkeiten/Blocker, Aufwand, Scope und
+  Prioritätsbegründung.
+
+### TASKSOLVER-Abschluss 2026-09-05
+
+- TASKPLAN 201 und 203 lokal umgesetzt; PRIVATE.txt blieb unverändert.
+- Verifiziert: 10 Tests, Ruff, `compileall`, Versionsgleichstand 0.1.1,
+  Plain-/JSON-Smokes mit SQLite sowie DE/EN-Parität und UTF-8.
+- Kein Release, Package-Publish oder Push.

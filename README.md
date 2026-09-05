@@ -34,9 +34,9 @@ explicitly.
 Anything can be forced:
 
 ```
-CONDITION_GATES_BACKEND = auto | usmc | sqlite
-CONDITION_GATES_DB      = <path>       (sqlite only)
-CONDITION_GATES_AGENT   = <agent-id>   (USMC only; default: condition-gates)
+CONDITION_GATES_BACKEND=sqlite
+CONDITION_GATES_DB=<path>       # sqlite only
+CONDITION_GATES_AGENT=<agent-id>   # USMC only; default: condition-gates
 ```
 
 ## Append-only
@@ -49,14 +49,32 @@ the history including its evidence stays readable.
 ## CLI
 
 ```bash
-python -m condition_gates doctor                     # backend detection + inventory
+python -m condition_gates doctor [--json]            # backend detection + inventory
 python -m condition_gates list [--all] [--json]      # default: open ones only
-python -m condition_gates open "<condition>" --blocks "<what is blocked>" --proof "<proof path>"
-python -m condition_gates meet <id> --evidence "<proof text from the tool query>"
-python -m condition_gates drop <id> --reason "<why it is moot>"
+python -m condition_gates open "<condition>" --blocks "<what is blocked>" --proof "<proof path>" [--json]
+python -m condition_gates meet <id> --evidence "<proof text from the tool query>" [--json]
+python -m condition_gates drop <id> --reason "<why it is moot>" [--json]
 ```
 
 Exit codes: `0` ok · `1` domain error (e.g. missing evidence) · `2` gate not found.
+
+## Machine-readable output
+
+Every command accepts `--json`. Backend metadata always has the same separate location;
+command data is stored under `gates`, `gate`, `diagnostics`, or `error`:
+
+```json
+{
+  "meta": {
+    "backend": "sqlite",
+    "backend_description": "SQLite (<path>)"
+  },
+  "gates": []
+}
+```
+
+Successful JSON is written to stdout; JSON errors are written to stderr and preserve the
+documented exit codes.
 
 ## Python
 
