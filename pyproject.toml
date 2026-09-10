@@ -28,6 +28,21 @@ classifiers = [
 ]
 dependencies = []
 
+[project.urls]
+Homepage = "https://github.com/ellmos-ai/condition-gates"
+Repository = "https://github.com/ellmos-ai/condition-gates.git"
+Issues = "https://github.com/ellmos-ai/condition-gates/issues"
+Changelog = "https://github.com/ellmos-ai/condition-gates/blob/main/CHANGELOG.md"
+Organization = "https://github.com/ellmos-ai"
+Umbrella = "https://github.com/open-bricks"
+"Marketing Log" = "https://github.com/ellmos-ai/condition-gates/blob/main/MARKETING-LOG.txt"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "ruff>=0.1.0",
+]
+
 [project.scripts]
 condition-gates = "condition_gates.cli:main"
 
@@ -38,3 +53,8 @@ include = ["condition_gates*"]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
 pythonpath = ["."]
+addopts = "-ra -v"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
