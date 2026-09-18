@@ -8,9 +8,9 @@
 - **Primary Language:** Python (>=3.10)
 - **Architecture:** USMC Shared Memory with Standalone SQLite Fallback (`~/.condition-gates/gates.db`)
 - **Status:** Private (internal development)
-- **Version:** 0.1.1
+- **Version:** 0.1.2
 - **Ecosystem:** ellmos-ai / open-bricks
-- **Last Checked:** 2026-09-10
+- **Last Checked:** 2026-09-18
 
 ## Core Concept
 
@@ -26,6 +26,8 @@ Closing a gate via `meet()` without evidence fails by design (fail-closed proof 
 - `condition_gates/cli.py`: Command line interface (`doctor`, `list`, `open`, `meet`, `drop`)
 - `gates.py`: Standalone CLI launcher without prior package installation
 - `ellmos-module.v2.json`: ELLMOS module descriptor
+- `SECURITY.md`: Vulnerability disclosure policy, 48h SLA, and architectural invariants
+- `THIRD_PARTY_LICENSES.md`: Zero-dependency inventory, license texts, and system invariants
 - `MARKETING-LOG.txt`: Target personas, discoverability strategy, future recommendations
 - `CHANGELOG.md`: Version history and change log
 - `PRIVATE.txt`: Private repository guardrail

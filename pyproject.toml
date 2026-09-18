@@ -4,10 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "condition-gates"
-version = "0.1.1"
+version = "0.1.2"
 description = "Bedingungen als nachprüfbare, sessionübergreifende Gates für LLM-Agenten"
 readme = "README.md"
 license = {text = "MIT"}
+license-files = ["LICENSE", "THIRD_PARTY_LICENSES.md"]
 requires-python = ">=3.10"
 authors = [
     {name = "Lukas Geiger"},
@@ -24,18 +25,23 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
 dependencies = []
 
 [project.urls]
 Homepage = "https://github.com/ellmos-ai/condition-gates"
+Documentation = "https://github.com/ellmos-ai/condition-gates#readme"
 Repository = "https://github.com/ellmos-ai/condition-gates.git"
 Issues = "https://github.com/ellmos-ai/condition-gates/issues"
 Changelog = "https://github.com/ellmos-ai/condition-gates/blob/main/CHANGELOG.md"
+Security = "https://github.com/ellmos-ai/condition-gates/blob/main/SECURITY.md"
+"Third-Party Licenses" = "https://github.com/ellmos-ai/condition-gates/blob/main/THIRD_PARTY_LICENSES.md"
 Organization = "https://github.com/ellmos-ai"
 Umbrella = "https://github.com/open-bricks"
 "Marketing Log" = "https://github.com/ellmos-ai/condition-gates/blob/main/MARKETING-LOG.txt"
+"LLM Ready" = "https://github.com/ellmos-ai/condition-gates/blob/main/llms.txt"
 
 [project.optional-dependencies]
 dev = [
@@ -50,10 +56,12 @@ condition-gates = "condition_gates.cli:main"
 include = ["condition_gates*"]
 
 [tool.pytest.ini_options]
+minversion = "7.0"
 testpaths = ["tests"]
 python_files = ["test_*.py"]
 pythonpath = ["."]
 addopts = "-ra -v"
+norecursedirs = [".git", ".pytest_cache", "__pycache__", "build", "dist", ".venv", "venv"]
 
 [tool.ruff]
 line-length = 100

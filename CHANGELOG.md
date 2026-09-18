@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.2] - 2026-09-18
+
+### Added
+- **GitHub Actions CI Matrix**: Added `.github/workflows/ci.yml` supporting multi-OS (`ubuntu-latest`, `windows-latest`) across Python versions 3.10, 3.11, 3.12, and 3.13 with compileall, ruff linting, and pytest validation.
+- **Workflow Lifecycle Automation**: Added `.github/workflows/stale.yml` (daily stale management) and `.github/workflows/welcome.yml` (contributor welcome) with least-privilege token permissions, explicit timeouts, and concurrency controls.
+- **Security Policy (`SECURITY.md`)**: Documented supported version lifecycle (0.1.x), private vulnerability reporting procedure, 48-hour initial response SLA, 5-day triage commitment, and zero-network-egress invariants.
+- **Software Bill of Materials (`THIRD_PARTY_LICENSES.md`)**: Certified zero external runtime dependencies (`dependencies = []`), PSF-2.0 and MIT licensing, `RunAsInvoker` unprivileged execution model, and mapping to `INV-GATE-01`..`08` and `INV-LOCAL-01`..`10`.
+- **Extended Contract Testing**: Added automated contract tests in `tests/test_metadata.py` verifying CI workflows, gitignore safety patterns, PEP 621 Python 3.13 classifier declaration, standalone CLI launcher execution, and security/SBOM compliance.
+
+### Changed
+- **PEP 621 Standardisation**: Updated `pyproject.toml` with `Programming Language :: Python :: 3.13` classifier, `license-files` declaration, extended project URLs (`Documentation`, `Security`, `Third-Party Licenses`, `LLM Ready`), and pytest `minversion = "7.0"` with `norecursedirs`.
+- **Gitignore Hardening**: Enhanced `.gitignore` with multi-host cloud-sync collision patterns (`*conflicted copy*`, `* (Kopie)*`, `* (Copy)*`, `*-ASUS*`, `*-LAPTOP*`, `*-WORKSTATION*`, etc.), lock system guards, and build artifact exclusions.
+- **Synchronized Badges**: Updated test status badges in English and German README files.
+
 ## [0.1.1] - 2026-09-10
 
 ### Added

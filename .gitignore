@@ -1,13 +1,53 @@
+# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
+*$py.class
+
+# Caches and test artifacts
 .pytest_cache/
 .ruff_cache/
+.hypothesis/
+.coverage*
+.nyc_output/
+.turbo/
+
+# Packaging and distribution
 *.egg-info/
 build/
 dist/
+
+# Virtual environments
 .venv/
 venv/
+
+# Local databases and SQLite journals
 *.db
 *.db-shm
 *.db-wal
+
+# Lock system guards (Fail-Closed)
+LOCK
+LOCK.*
 LOCK*.txt
+LOCK.permissions.json
+
+# Multi-host sync conflict copies
+*conflicted copy*
+* (Kopie)*
+* (Copy)*
+*-ASUS*
+*-ASUS-GEI*
+*-LAPTOP*
+*-WORKSTATION*
+*-WORKSTATION-LG*
+*-Mac Studio*
+*-MacBook*
+
+# Package locks & dependencies
+uv.lock
+!package-lock.json
+node_modules/
+
+# Patch backups
+*.orig
+*.rej

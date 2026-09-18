@@ -59,3 +59,13 @@ Familie: .ORCHESTRATION · Art: library (CLI + Python-API)
 
 4. **Verzeichniseinträge & Awesome Lists:**
    - Einreichung bei `awesome-ai-agents`, `awesome-python-testing` und `awesome-local-ai`.
+
+## 5. Pfad A — CI-Matrix, PEP 621 Standardisation & Governance Hardening (2026-09-18)
+
+- [x] Multi-OS CI-Matrix (`.github/workflows/ci.yml`) für Ubuntu & Windows über Python 3.10, 3.11, 3.12 und 3.13.
+- [x] Lifecycle-Automationen (`stale.yml` und `welcome.yml`) mit Least-Privilege-Permissions und Concurrency-Guards.
+- [x] Sicherheitsrichtlinie `SECURITY.md` mit 48h Response SLA und Architektur-Invarianten.
+- [x] Lizenz- und SBOM-Dokumentation `THIRD_PARTY_LICENSES.md` mit Null-Abhängigkeiten-Zertifizierung und System-Invarianten-Mapping (`INV-GATE-01..08`, `INV-LOCAL-01..10`).
+- [x] Standardisierung von `pyproject.toml` (PEP 621, Python 3.13 Classifier, erweiterte URLs, Pytest minversion & norecursedirs).
+- [x] Härtung von `.gitignore` gegen Multi-Host-Konfliktkopien, Lock-Dateien und Cache-Artefakte.
+- [x] Erweiterung der automatisierten Vertragstests in `tests/test_metadata.py`.

@@ -2,10 +2,19 @@
 
 ## Aktueller Prüfstand
 
-Stand 2026-09-05 · Version 0.1.1 · 10 Tests bestanden · Ruff und `compileall` sauber.
+Stand 2026-09-18 · Version 0.1.2 · 24 Tests bestanden · Multi-OS CI-Matrix, Ruff und `compileall` sauber.
 
 ## Erledigt
 
+- [x] **2026-09-18 (Pfad A — CI-Matrix, PEP 621 Standardisation, SBOM & Governance):**
+  - Multi-OS GitHub Actions CI-Matrix (`.github/workflows/ci.yml`) für Ubuntu und Windows über Python 3.10, 3.11, 3.12 und 3.13 mit Concurrency-Guards, Least-Privilege-Rechten (`contents: read`) und 15-Minuten-Timeout.
+  - Lifecycle-Workflows `.github/workflows/stale.yml` und `.github/workflows/welcome.yml` hinzugefügt.
+  - Sicherheitsrichtlinie `SECURITY.md` mit 48h Response SLA, 5-Tage-Triage und Architektur-Invarianten angelegt.
+  - Software Bill of Materials & Lizenzinventar `THIRD_PARTY_LICENSES.md` mit 0-Abhängigkeiten-Zertifizierung und System-Invarianten-Mapping (`INV-GATE-01..08`, `INV-LOCAL-01..10`) erstellt.
+  - `pyproject.toml` auf PEP 621 mit Python 3.13 Classifier, license-files, erweiterten URLs und Pytest-Härtung aktualisiert.
+  - `.gitignore` gegen Multi-Host-Cloud-Sync-Konflikte, Lock-Dateien und Cache-Artefakte gehärtet.
+  - Vertragstest-Suite in `tests/test_metadata.py` erweitert (Gesamtsuite von 17 auf 24 Tests gewachsen, 100% grün).
+  - Version einheitlich auf 0.1.2 gehoben (`__init__.py`, `pyproject.toml`, `ellmos-module.v2.json`, `llms.txt`, `CHANGELOG.md`).
 - [x] **2026-08-14 (P-006 Sprachzug — Stufe 1 Core erreicht, DE+EN):**
   - Primärfassungswechsel: das bisherige deutsche `README.md` liegt jetzt als `README_de.md`
     (umbenannt, nicht kopiert), `README.md` ist die englische 1:1-Übersetzung.

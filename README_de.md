@@ -3,7 +3,8 @@
 <p align="center">
   <a href="https://github.com/ellmos-ai/condition-gates"><img src="https://img.shields.io/badge/python-3.10%2B-blue.svg" alt="Python 3.10+"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="Lizenz: MIT"></a>
-  <a href="tests"><img src="https://img.shields.io/badge/tests-17%20passed%20%7C%20100%25%20gr%C3%BCn-brightgreen.svg" alt="Tests: 17 bestanden"></a>
+  <a href="https://github.com/ellmos-ai/condition-gates/actions/workflows/ci.yml"><img src="https://img.shields.io/badge/CI-GitHub%20Actions-brightgreen.svg" alt="CI: GitHub Actions"></a>
+  <a href="tests"><img src="https://img.shields.io/badge/tests-24%20passed%20%7C%20100%25%20gr%C3%BCn-brightgreen.svg" alt="Tests: 24 bestanden"></a>
   <a href="https://github.com/astral-sh/ruff"><img src="https://img.shields.io/badge/code%20style-ruff-261230.svg" alt="Ruff"></a>
   <a href="#speicher-erkennen-sonst-selbst-anlegen"><img src="https://img.shields.io/badge/architecture-USMC%20%7C%20SQLite%20Fallback-orange.svg" alt="Architektur: USMC | SQLite Fallback"></a>
   <a href="#append-only"><img src="https://img.shields.io/badge/storage-Append--Only%20Audit-purple.svg" alt="Speicher: Append-Only Audit"></a>
@@ -255,6 +256,12 @@ python -m compileall -q .
 # Mermaid-Diagrammsyntax prüfen
 python %OneDrive%\.GITHUBBOT\_tools\lint_mermaid.py .
 ```
+
+## Sicherheit und Governance
+
+- **Sicherheitsrichtlinie:** Siehe [SECURITY.md](SECURITY.md) für Richtlinien zur Schwachstellenmeldung, das 48h-SLA und Architektur-Invarianten.
+- **Drittanbieterlizenzen & SBOM:** Siehe [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md) für das Laufzeit-Inventar (0 externe Abhängigkeiten, 100% Python Standard Library PSF-2.0), unprivilegiertes `RunAsInvoker`-Ausführungsmodell und System-Invarianten.
+- **CI-Automation:** Multi-OS CI-Matrix auf Ubuntu und Windows über Python 3.10, 3.11, 3.12 und 3.13 (`.github/workflows/ci.yml`).
 
 ## Lizenz
 
