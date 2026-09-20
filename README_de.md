@@ -102,7 +102,7 @@ sequenceDiagram
         Engine->>Store: "append_event(status='MET', evidence=evidence)"
         Store-->>Engine: "ack(gate_id)"
         Engine-->>Agent: "gate_object(status='MET')"
-        Note over Agent: Sperre aufgehoben; nachgelagerter Schritt wird ausgeführt
+        Note over Agent: Sperre aufgehoben - nachgelagerter Schritt wird ausgeführt
     end
 ```
 

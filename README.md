@@ -102,7 +102,7 @@ sequenceDiagram
         Engine->>Store: "append_event(status='MET', evidence=evidence)"
         Store-->>Engine: "ack(gate_id)"
         Engine-->>Agent: "gate_object(status='MET')"
-        Note over Agent: Block lifted; downstream execution safely proceeds
+        Note over Agent: Block lifted - downstream execution safely proceeds
     end
 ```
 
