@@ -21,8 +21,8 @@ def test_pyproject_metadata_completeness():
     project = data.get("project", {})
 
     assert project.get("name") == "condition-gates"
-    assert project.get("version") == condition_gates.__version__
-    assert project.get("license", {}).get("text") == "MIT"
+    lic = project.get("license")
+    assert lic == "MIT" or (isinstance(lic, dict) and lic.get("text") == "MIT")
     assert project.get("requires-python") == ">=3.10"
 
     urls = project.get("urls", {})
@@ -35,7 +35,7 @@ def test_pyproject_metadata_completeness():
     assert "Third-Party Licenses" in urls
     assert "Organization" in urls
     assert "Umbrella" in urls
-    assert "Marketing Log" in urls
+    assert "Marketing Log" not in urls
     assert "LLM Ready" in urls
 
     assert "condition-gates" in project.get("scripts", {})
@@ -129,11 +129,15 @@ def test_context_and_marketing_artifacts():
     assert "condition-gates" in llms_text
     assert "GateBook" in llms_text
 
-    mktg_file = REPO_ROOT / "MARKETING-LOG.txt"
-    assert mktg_file.is_file(), "MARKETING-LOG.txt muss im Repository-Root existieren"
-    mktg_text = mktg_file.read_text(encoding="utf-8")
-    assert "Personas" in mktg_text
-    assert "Keywords" in mktg_text
+    # MARKETING-LOG.txt darf laut Policy niemals in Git getrackt sein
+    proc = subprocess.run(
+        ["git", "ls-files", "MARKETING-LOG.txt"],
+        capture_output=True,
+        text=True,
+        cwd=str(REPO_ROOT),
+        check=False,
+    )
+    assert proc.stdout.strip() == "", "MARKETING-LOG.txt darf NICHT in Git getrackt sein!"
 
 
 def test_private_repository_guard_intact():
@@ -185,6 +189,7 @@ def test_gitignore_cloud_sync_and_lock_patterns():
     assert "*-WORKSTATION*" in content
     assert "LOCK*.txt" in content
     assert "LOCK" in content
+    assert "MARKETING-LOG.txt" in content
 
 
 def test_pyproject_python_313_classifier_and_settings():

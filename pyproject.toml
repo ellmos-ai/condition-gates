@@ -7,7 +7,7 @@ name = "condition-gates"
 version = "0.1.2"
 description = "Bedingungen als nachprüfbare, sessionübergreifende Gates für LLM-Agenten"
 readme = "README.md"
-license = {text = "MIT"}
+license = "MIT"
 license-files = ["LICENSE", "THIRD_PARTY_LICENSES.md"]
 requires-python = ">=3.10"
 authors = [
@@ -40,7 +40,6 @@ Security = "https://github.com/ellmos-ai/condition-gates/blob/main/SECURITY.md"
 "Third-Party Licenses" = "https://github.com/ellmos-ai/condition-gates/blob/main/THIRD_PARTY_LICENSES.md"
 Organization = "https://github.com/ellmos-ai"
 Umbrella = "https://github.com/open-bricks"
-"Marketing Log" = "https://github.com/ellmos-ai/condition-gates/blob/main/MARKETING-LOG.txt"
 "LLM Ready" = "https://github.com/ellmos-ai/condition-gates/blob/main/llms.txt"
 
 [project.optional-dependencies]
@@ -66,3 +65,7 @@ norecursedirs = [".git", ".pytest_cache", "__pycache__", "build", "dist", ".venv
 [tool.ruff]
 line-length = 100
 target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "RUF022"]
+ignore = ["E501"]
