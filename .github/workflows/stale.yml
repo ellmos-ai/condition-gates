@@ -15,7 +15,8 @@ permissions:
 
 jobs:
   stale:
-    runs-on: ubuntu-latest
+    # Private Repos: Self-hosted Mac-Runner (ubuntu/macos), windows bleibt gehostet; oeffentlich/Fork: wie bisher.
+    runs-on: ${{ github.event.repository.private && fromJSON('["self-hosted","macOS","mac-studio"]') || 'ubuntu-latest' }}
     timeout-minutes: 10
     steps:
       - uses: actions/stale@v9
