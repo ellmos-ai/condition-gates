@@ -22,7 +22,7 @@ def test_pyproject_metadata_completeness():
 
     assert project.get("name") == "condition-gates"
     assert project.get("version") == condition_gates.__version__
-    assert project.get("license", {}).get("text") == "MIT"
+    assert project.get("license") == "MIT"
     assert project.get("requires-python") == ">=3.10"
 
     urls = project.get("urls", {})

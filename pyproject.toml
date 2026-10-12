@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=68.0", "wheel"]
+requires = ["setuptools>=77", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -7,7 +7,7 @@ name = "condition-gates"
 version = "0.1.2"
 description = "Bedingungen als nachprüfbare, sessionübergreifende Gates für LLM-Agenten"
 readme = "README.md"
-license = {text = "MIT"}
+license = "MIT"
 license-files = ["LICENSE", "THIRD_PARTY_LICENSES.md"]
 requires-python = ">=3.10"
 authors = [
