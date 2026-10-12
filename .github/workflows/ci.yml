@@ -16,7 +16,8 @@ permissions:
 jobs:
   test:
     name: Python ${{ matrix.python-version }} on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
+    # Private Repos: Self-hosted Mac-Runner (ubuntu/macos), windows bleibt gehostet; oeffentlich/Fork: wie bisher.
+    runs-on: ${{ github.event.repository.private && (startsWith(matrix.os, 'ubuntu') || startsWith(matrix.os, 'macos')) && fromJSON('["self-hosted","macOS","mac-studio"]') || matrix.os }}
     timeout-minutes: 15
     strategy:
       fail-fast: false

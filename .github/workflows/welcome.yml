@@ -16,7 +16,8 @@ permissions:
 
 jobs:
   welcome:
-    runs-on: ubuntu-latest
+    # Private Repos: Self-hosted Mac-Runner (ubuntu/macos), windows bleibt gehostet; oeffentlich/Fork: wie bisher.
+    runs-on: ${{ github.event.repository.private && fromJSON('["self-hosted","macOS","mac-studio"]') || 'ubuntu-latest' }}
     timeout-minutes: 5
     steps:
       - uses: actions/first-interaction@v3
