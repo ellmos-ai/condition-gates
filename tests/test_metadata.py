@@ -2,11 +2,17 @@
 """Vertragstests für Repository-Metadaten, Bilinguale READMEs, Invarianten und Diagramme."""
 
 import json
+import os
 import re
 import subprocess
 import sys
-import tomllib
+try:
+    import tomllib
+except ModuleNotFoundError:
+    import tomli as tomllib
 from pathlib import Path
+
+import pytest
 
 import condition_gates
 
@@ -21,6 +27,7 @@ def test_pyproject_metadata_completeness():
     project = data.get("project", {})
 
     assert project.get("name") == "condition-gates"
+    assert project.get("version") == condition_gates.__version__
     lic = project.get("license")
     assert lic == "MIT" or (isinstance(lic, dict) and lic.get("text") == "MIT")
     assert project.get("requires-python") == ">=3.10"
@@ -135,7 +142,7 @@ def test_context_and_marketing_artifacts():
         capture_output=True,
         text=True,
         cwd=str(REPO_ROOT),
-        check=False,
+        check=True,
     )
     assert proc.stdout.strip() == "", "MARKETING-LOG.txt darf NICHT in Git getrackt sein!"
 
@@ -244,3 +251,34 @@ def test_standalone_launcher_contract():
     assert proc.returncode == 0, f"gates.py doctor fehlgeschlagen: {proc.stderr}"
     data = json.loads(proc.stdout)
     assert "meta" in data or "backend" in data or "status" in data
+
+
+def test_metadata_completeness_rejects_version_mismatch(monkeypatch):
+    monkeypatch.setattr(condition_gates, "__version__", "mismatched-test-version")
+    with pytest.raises(AssertionError):
+        test_pyproject_metadata_completeness()
+
+
+@pytest.mark.parametrize("repo_state", ["no-repository", "untracked", "tracked"])
+def test_marketing_guard_requires_successful_git_evidence(tmp_path, monkeypatch, repo_state):
+    monkeypatch.setattr(sys.modules[__name__], "REPO_ROOT", tmp_path)
+    (tmp_path / "llms.txt").write_text("condition-gates GateBook", encoding="utf-8")
+    monkeypatch.setenv("GIT_CEILING_DIRECTORIES", str(tmp_path.parent))
+    monkeypatch.setenv("GIT_CONFIG_GLOBAL", os.devnull)
+    monkeypatch.setenv("GIT_CONFIG_NOSYSTEM", "1")
+    for variable in ("GIT_DIR", "GIT_WORK_TREE", "GIT_COMMON_DIR"):
+        monkeypatch.delenv(variable, raising=False)
+    if repo_state != "no-repository":
+        subprocess.run(["git", "init", "--template=", str(tmp_path)], check=True,
+                       capture_output=True, text=True)
+    if repo_state == "tracked":
+        (tmp_path / "MARKETING-LOG.txt").write_text("synthetic test record", encoding="utf-8")
+        subprocess.run(["git", "add", "MARKETING-LOG.txt"], cwd=tmp_path,
+                       check=True, capture_output=True, text=True)
+        with pytest.raises(AssertionError, match="NICHT"):
+            test_context_and_marketing_artifacts()
+    elif repo_state == "no-repository":
+        with pytest.raises(subprocess.CalledProcessError):
+            test_context_and_marketing_artifacts()
+    else:
+        test_context_and_marketing_artifacts()

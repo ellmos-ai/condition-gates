@@ -4,7 +4,7 @@ on:
   push:
     branches: [main, master]
   pull_request:
-    branches: [main, master]
+    branches: [main, master, fix/packaging-license-and-hygiene]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -13,16 +13,30 @@ concurrency:
 permissions:
   contents: read
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   test:
     name: Python ${{ matrix.python-version }} on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.os == 'macos-latest' && github.event.repository.private && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && fromJSON('["self-hosted", "macOS", "ARM64", "mac-studio"]') || matrix.os }}
+    env:
+      CONDITION_GATES_BACKEND: sqlite
+      CONDITION_GATES_DB: .pytest_temp/standalone-test.db
     timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
         python-version: ["3.10", "3.11", "3.12", "3.13"]
+        include:
+          - os: ubuntu-latest
+            python-bin: .venv/bin/python
+          - os: windows-latest
+            python-bin: .venv/Scripts/python.exe
+          - os: macos-latest
+            python-bin: .venv/bin/python
 
     steps:
       - name: Check out repository
@@ -35,17 +49,21 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          python -m pip install -e ".[dev]"
+          python -m venv .venv
+          "${{ matrix.python-bin }}" -m pip install --upgrade pip
+          "${{ matrix.python-bin }}" -m pip install -e ".[dev]" build
 
       - name: Validate Python syntax (compileall)
         run: |
-          python -m compileall -q condition_gates tests
+          "${{ matrix.python-bin }}" -m compileall -q condition_gates tests
 
       - name: Lint with Ruff
         run: |
-          python -m ruff check .
+          "${{ matrix.python-bin }}" -m ruff check .
 
       - name: Run test suite
         run: |
-          python -m pytest -ra -v
+          "${{ matrix.python-bin }}" -m pytest -ra -v
+
+      - name: Build wheel and source distribution
+        run: '"${{ matrix.python-bin }}" -m build'

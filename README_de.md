@@ -256,7 +256,8 @@ python -m ruff check .
 python -m compileall -q .
 
 # Mermaid-Diagrammsyntax prüfen
-python -m lint_mermaid .
+# Optionaler Mermaid-Parsercheck: installierter Skill; MERMAID_LINT setzen
+node "$MERMAID_LINT" .
 ```
 
 ## Sicherheit und Governance
