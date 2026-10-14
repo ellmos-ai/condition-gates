@@ -3,7 +3,6 @@ include PRIVATE.txt
 include README.md
 include README_de.md
 include CHANGELOG.md
-include MARKETING-LOG.txt
 include llms.txt
 include ellmos-module.v2.json
 recursive-include tests *.py
