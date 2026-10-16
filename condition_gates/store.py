@@ -70,9 +70,11 @@ class UsmcStore:
         return "USMC (agent={})".format(self.agent)
 
     def _run(self, args, timeout=90):
+        # Native console entry points accept literal argv on every platform.
+        # A shell drops POSIX arguments and interprets Windows agent/gate data.
         return subprocess.run(["usmc", "--agent", self.agent] + args, capture_output=True,
                               text=True, encoding="utf-8", timeout=timeout,
-                              shell=True, creationflags=NO_WINDOW)
+                              shell=False, creationflags=NO_WINDOW)
 
     def append(self, gate: Gate) -> None:
         parts = ["GATE {}".format(gate["gate_id"]),
