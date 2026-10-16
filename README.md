@@ -118,9 +118,9 @@ Two backends behind one interface, selected automatically:
 | **SQLite** | otherwise — fallback without any foreign dependency | `~/.condition-gates/gates.db`, file and table are created on demand |
 
 The fallback is silent on purpose: a missing USMC is not an error but a host without that
-service. If USMC is installed but broken, that is reported on stderr and evaded anyway — a
-broken store must not halt the work. Every output states which backend won; `doctor` shows it
-explicitly.
+service. An unavailable USMC transport is reported on stderr before the SQLite fallback.
+Recognized gate-record integrity errors stop loading and never select an empty SQLite
+store automatically. Every output states which backend won; `doctor` shows it explicitly.
 
 Anything can be forced:
 
@@ -136,6 +136,16 @@ A status change appends a **new** record instead of altering the old one; per ga
 recent one applies. With USMC this is enforced (individual working entries cannot be deleted),
 with the SQLite backend it is deliberately kept the same — that way both behave identically and
 the history including its evidence stays readable.
+
+New USMC notes use `GATE g1 | format=json-v1 | status=OFFEN | ...`. Text fields are
+JSON strings; pipes are escaped as `\u007c` and line breaks are escaped. Text and gate IDs
+round-trip literally instead of becoming status fields. Unambiguous legacy notes remain
+readable. Duplicate fields, unknown statuses/versions and malformed versioned values are
+integrity errors and require inspection rather than a guessed gate state.
+
+Update readers before enabling the new writers: older readers do not decode JSON text
+values. Existing USMC notes are not rewritten, and ambiguous legacy data is not repaired
+automatically. This is an integration requirement; the source change performs no rollout.
 
 ## CLI
 
