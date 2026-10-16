@@ -118,9 +118,10 @@ Zwei Backends hinter einer Schnittstelle, Auswahl automatisch:
 | **SQLite** | sonst — Fallback ohne jede Fremdabhängigkeit | `~/.condition-gates/gates.db`, Datei und Tabelle werden bei Bedarf selbst angelegt |
 
 Der Fallback ist absichtlich still: Ein fehlendes USMC ist kein Fehler, sondern ein Host ohne
-diesen Dienst. Ist USMC zwar installiert, aber defekt, wird das auf stderr gemeldet und trotzdem
-ausgewichen — ein kaputter Speicher darf die Arbeit nicht anhalten. Welches Backend gewonnen hat,
-sagt jede Ausgabe; `doctor` zeigt es explizit.
+diesen Dienst. Ein nicht erreichbarer USMC-Transport wird vor dem SQLite-Fallback auf stderr
+gemeldet. Erkannte Datenfehler in Gate-Datensätzen stoppen das Laden und wählen nie automatisch
+einen leeren SQLite-Speicher. Welches Backend gewonnen hat, sagt jede Ausgabe; `doctor` zeigt es
+explizit.
 
 Erzwingen lässt sich alles:
 
@@ -136,6 +137,19 @@ Ein Statuswechsel hängt einen **neuen** Datensatz an, statt den alten zu änder
 der jüngste. Bei USMC ist das erzwungen (einzelne Working-Einträge lassen sich nicht löschen),
 beim SQLite-Backend bewusst gleich gehalten — so verhalten sich beide identisch und die Historie
 samt Evidenz bleibt lesbar.
+
+Neue USMC-Notizen verwenden `GATE g1 | format=json-v1 | status=OFFEN | ...`. Textfelder
+sind JSON-Zeichenketten; senkrechte Striche werden als `\u007c` und Zeilenumbrüche als
+Escape-Sequenzen geschrieben. Texte und Gate-IDs bleiben dadurch beim Rundlauf unverändert
+und können keine Statusfelder werden. Eindeutige Altbestände bleiben lesbar. Doppelte Felder,
+unbekannte Statuswerte oder Formatversionen und beschädigte neue Werte sind Datenfehler;
+sie erfordern eine Prüfung statt eines geratenen Gate-Zustands. Solche Fehler stoppen das
+Laden und wählen nicht automatisch einen leeren SQLite-Speicher.
+
+Zuerst die Leser aktualisieren, danach neue Schreiber aktivieren: Alte Leser dekodieren
+die JSON-Textwerte nicht. Bestehende USMC-Notizen werden nicht umgeschrieben und mehrdeutige
+Altbestände nicht automatisch repariert. Diese Integrationsanforderung bedeutet keinen
+automatischen Rollout durch die Quelländerung.
 
 ## CLI
 

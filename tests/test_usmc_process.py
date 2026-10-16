@@ -85,8 +85,8 @@ def test_native_usmc_append_keeps_note_one_argument(fake_usmc, status, priority,
     received = json.loads(record.read_text(encoding="utf-8"))
     assert received[:3] == ["--agent", "synthetic-agent", "note"]
     assert received[3] == (
-        f'GATE g1 | status={status} | bedingung=Prüfe "Datei" & <Ordner>'
-        " | blockiert=task | beleg=Nachweis | evidenz=a & b | grund=Grund"
+        f'GATE g1 | format=json-v1 | status={status} | bedingung="Prüfe \\"Datei\\" & <Ordner>"'
+        ' | blockiert="task" | beleg="Nachweis" | evidenz="a & b" | grund="Grund"'
     )
     assert received[4:] == ["--type", "loop", "--priority", priority, "--tags", f"gate,{tag},condition"]
     assert not marker.exists()

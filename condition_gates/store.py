@@ -40,6 +40,32 @@ NO_WINDOW = getattr(subprocess, "CREATE_NO_WINDOW", 0)
 DEFAULT_USMC_AGENT = "condition-gates"
 
 
+class UsmcRecordError(RuntimeError):
+    """Recognized gate data is ambiguous; a different empty store is not a fallback."""
+
+    def __init__(self):
+        super().__init__("USMC-Gate enthält ungültige oder mehrdeutige Felder.")
+
+
+def _note_text(value) -> str:
+    encoded = json.dumps(str(value), ensure_ascii=False)
+    for code in (0x7C, 0x85, 0x2028, 0x2029):
+        encoded = encoded.replace(chr(code), chr(92) + "u{:04x}".format(code))
+    return encoded
+
+
+def _read_note_text(value: str) -> str:
+    if not (value.startswith('"') and value.endswith('"')):
+        raise UsmcRecordError()
+    try:
+        decoded = json.loads(value)
+    except ValueError:
+        raise UsmcRecordError() from None
+    if not isinstance(decoded, str):
+        raise UsmcRecordError()
+    return decoded
+
+
 class Gate(dict):
     """Ein Gate als schlichtes Mapping — bewusst dict, damit es trivial serialisiert."""
 
@@ -77,15 +103,14 @@ class UsmcStore:
                               shell=False, creationflags=NO_WINDOW)
 
     def append(self, gate: Gate) -> None:
-        parts = ["GATE {}".format(gate["gate_id"]),
-                 "status={}".format(gate["status"]),
-                 "bedingung={}".format(gate.get("condition", "")),
-                 "blockiert={}".format(gate.get("blocks", "")),
-                 "beleg={}".format(gate.get("proof", ""))]
-        if gate.get("evidence"):
-            parts.append("evidenz={}".format(gate["evidence"]))
-        if gate.get("reason"):
-            parts.append("grund={}".format(gate["reason"]))
+        token = re.sub(r"\s", lambda m: chr(92) + "u{:04x}".format(ord(m[0])),
+                       _note_text(gate["gate_id"])[1:-1])
+        if not token:
+            raise UsmcRecordError()
+        parts = ["GATE {}".format(token), "format=json-v1", "status={}".format(gate["status"])]
+        for name, field in (("bedingung", "condition"), ("blockiert", "blocks"),
+                            ("beleg", "proof"), ("evidenz", "evidence"), ("grund", "reason")):
+            parts.append("{}={}".format(name, _note_text(gate.get(field) or "")))
         prio = {OPEN: 7, MET: 5, DROPPED: 3}[gate["status"]]
         tag_state = {OPEN: "offen", MET: "erfüllt", DROPPED: "verworfen"}[gate["status"]]
         r = self._run(["note", " | ".join(parts), "--type", "loop", "--priority", str(prio),
@@ -116,21 +141,47 @@ class UsmcStore:
     @staticmethod
     def _parse(entry) -> Gate | None:
         content = entry.get("content") or ""
-        m = re.match(r"GATE\s+(\S+)\s*\|", content)
+        parts = content.split("|")
+        if len(parts) < 2:
+            return None
+        m = re.fullmatch(r"GATE\s+(\S+)\s*", parts[0])
         if not m:
             return None
+        versioned = parts[1].partition("=")[0].strip().lower() == "format"
         fields = {}
-        for part in content.split("|")[1:]:
-            if "=" in part:
-                k, v = part.split("=", 1)
-                fields[k.strip().lower()] = v.strip()
-        return Gate(gate_id=m.group(1),
-                    status=(fields.get("status") or OPEN).upper(),
-                    condition=fields.get("bedingung", ""),
-                    blocks=fields.get("blockiert", ""),
-                    proof=fields.get("beleg", ""),
-                    evidence=fields.get("evidenz", ""),
-                    reason=fields.get("grund", ""),
+        for part in parts[1:]:
+            if not part.strip() and not versioned:
+                continue
+            if "=" not in part:
+                raise UsmcRecordError()
+            key, value = part.split("=", 1)
+            key = key.strip().lower()
+            if not key or key in fields:
+                raise UsmcRecordError()
+            fields[key] = value.strip()
+        texts = {"bedingung", "blockiert", "beleg", "evidenz", "grund"}
+        if versioned:
+            if (fields.get("format") != "json-v1"
+                    or set(fields) != texts | {"format", "status"}
+                    or not fields["status"]):
+                raise UsmcRecordError()
+            gid = _read_note_text('"' + m.group(1) + '"')
+            decoded = {key: _read_note_text(fields[key]) for key in texts}
+        else:
+            if not set(fields) <= texts | {"status"}:
+                raise UsmcRecordError()
+            gid = m.group(1)
+            decoded = {key: fields.get(key, "") for key in texts}
+        status = (fields.get("status") or OPEN).upper()
+        if not gid or status not in VALID_STATES:
+            raise UsmcRecordError()
+        return Gate(gate_id=gid,
+                    status=status,
+                    condition=decoded["bedingung"],
+                    blocks=decoded["blockiert"],
+                    proof=decoded["beleg"],
+                    evidence=decoded["evidenz"],
+                    reason=decoded["grund"],
                     created_at=entry.get("created_at", ""),
                     _row=entry.get("id"))
 
@@ -231,6 +282,8 @@ def open_store(backend: str | None = None, db_path=None, agent=None):
         try:
             store.load()          # Erreichbarkeit einmal echt prüfen, nicht nur die Datei
             return store
+        except UsmcRecordError:
+            raise                # Datenfehler dürfen vorhandene Gates nicht verdecken.
         except Exception as e:    # installiert, aber defekt/leer -> lieber sauber ausweichen
             sys.stderr.write("[condition-gates] USMC vorhanden, aber nicht nutzbar ({}); "
                              "weiche auf SQLite aus.\n".format(str(e)[:120]))
