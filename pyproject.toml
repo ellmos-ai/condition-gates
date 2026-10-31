@@ -40,7 +40,6 @@ Security = "https://github.com/ellmos-ai/condition-gates/blob/main/SECURITY.md"
 "Third-Party Licenses" = "https://github.com/ellmos-ai/condition-gates/blob/main/THIRD_PARTY_LICENSES.md"
 Organization = "https://github.com/ellmos-ai"
 Umbrella = "https://github.com/open-bricks"
-"Marketing Log" = "https://github.com/ellmos-ai/condition-gates/blob/main/MARKETING-LOG.txt"
 "LLM Ready" = "https://github.com/ellmos-ai/condition-gates/blob/main/llms.txt"
 
 [project.optional-dependencies]
@@ -67,3 +66,7 @@ norecursedirs = [".git", ".pytest_cache", "__pycache__", "build", "dist", ".venv
 [tool.ruff]
 line-length = 100
 target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "RUF022"]
+ignore = ["E501"]

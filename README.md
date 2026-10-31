@@ -256,7 +256,7 @@ python -m ruff check .
 python -m compileall -q .
 
 # Mermaid diagram syntax check
-python %OneDrive%\.GITHUBBOT\_tools\lint_mermaid.py .
+python -m lint_mermaid .
 ```
 
 ## Security and Governance

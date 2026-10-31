@@ -51,3 +51,6 @@ node_modules/
 # Patch backups
 *.orig
 *.rej
+
+# Marketing and local working logs (never committed to target repos)
+MARKETING-LOG.txt
