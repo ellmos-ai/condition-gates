@@ -8,5 +8,15 @@ from .core import GateBook, GateError
 from .store import DROPPED, MET, OPEN, Gate, SqliteStore, UsmcStore, open_store
 
 __version__ = "0.1.2"
-__all__ = ["GateBook", "GateError", "Gate", "open_store", "UsmcStore", "SqliteStore",
-           "OPEN", "MET", "DROPPED", "__version__"]
+__all__ = [
+    "DROPPED",
+    "MET",
+    "OPEN",
+    "Gate",
+    "GateBook",
+    "GateError",
+    "SqliteStore",
+    "UsmcStore",
+    "__version__",
+    "open_store",
+]
