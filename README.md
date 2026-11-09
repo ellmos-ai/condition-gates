@@ -15,7 +15,7 @@
   <a href="llms.txt"><img src="https://img.shields.io/badge/context-llms.txt%20ready-informational.svg" alt="llms.txt ready"></a>
   <a href="https://github.com/ellmos-ai"><img src="https://img.shields.io/badge/ecosystem-ellmos--ai-blue.svg" alt="Ecosystem: ellmos-ai"></a>
   <a href="https://github.com/open-bricks"><img src="https://img.shields.io/badge/umbrella-open--bricks-indigo.svg" alt="Umbrella: open-bricks"></a>
-  <a href="PRIVATE.txt"><img src="https://img.shields.io/badge/status-private-yellow.svg" alt="Status: Private"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/status-public-brightgreen.svg" alt="Status: Public"></a>
 </p>
 
 <p align="center"><strong>English</strong> · <a href="README_de.md">Deutsch</a></p>
@@ -25,8 +25,7 @@ tool query. Gates survive the end of a session and an abort.
 
 Family: `.ORCHESTRATION` · Type: `library` (CLI + Python API) · Consumer: Skill `condition`
 
-Canonical source: private repository `https://github.com/ellmos-ai/condition-gates`.
-This does not authorize a public release.
+Canonical source: `https://github.com/ellmos-ai/condition-gates`.
 
 ---
 
@@ -197,7 +196,7 @@ The module guarantees the following deterministic runtime invariants across all 
 - **`INV-GATE-05` — Deterministic CLI Exit Code Contract**: Strict exit codes (`0` = Success, `1` = Domain/Validation Error, `2` = Gate Not Found).
 - **`INV-GATE-06` — Dual-Stream Machine-Readable JSON Contract**: Standardized JSON envelope with segregated `meta` and command payload. Successful responses go to `stdout`, errors to `stderr`.
 - **`INV-GATE-07` — Separation of Management vs. Evaluation**: Gates manage and audit precondition lifecycles, while the logic for condition evaluation is decoupled and owned by calling skills/agents.
-- **`INV-GATE-08` — Private Repository Boundary**: Strictly bound by `PRIVATE.txt`; no unauthorized public releases, external mirrors, or public package deployments.
+- **`INV-GATE-08` — Open Source MIT Governance**: Licensed under the MIT License with zero external dependencies and full SBOM transparency.
 
 ## Ecosystem and Sister Modules
 

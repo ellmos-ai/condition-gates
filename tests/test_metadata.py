@@ -5,8 +5,12 @@ import json
 import re
 import subprocess
 import sys
-import tomllib
 from pathlib import Path
+
+try:
+    import tomllib
+except ModuleNotFoundError:
+    import tomli as tomllib  # type: ignore[no-redef]
 
 import condition_gates
 
@@ -140,12 +144,12 @@ def test_context_and_marketing_artifacts():
     assert proc.stdout.strip() == "", "MARKETING-LOG.txt darf NICHT in Git getrackt sein!"
 
 
-def test_private_repository_guard_intact():
+def test_public_release_readiness():
     private_file = REPO_ROOT / "PRIVATE.txt"
-    assert private_file.is_file(), "PRIVATE.txt muss existieren"
-    content = private_file.read_text(encoding="utf-8")
-    assert "GATE: closed" in content
-    assert "SCOPE: private-repository" in content
+    assert not private_file.exists(), "PRIVATE.txt darf nach Freigabe D-20261107-014 nicht mehr existieren"
+    manifest_file = REPO_ROOT / "ellmos-module.v2.json"
+    manifest_data = json.loads(manifest_file.read_text(encoding="utf-8"))
+    assert manifest_data.get("visibility") == "public"
 
 
 def test_ci_workflow_presence_and_matrix():
