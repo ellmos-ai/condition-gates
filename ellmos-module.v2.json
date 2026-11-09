@@ -5,7 +5,7 @@
   "version": "0.1.2",
   "category": "meta",
   "kind": "service",
-  "status": "stable",
+  "status": "released",
   "visibility": "public",
   "description": "Bedingungen als nachprüfbare, sessionübergreifende Gates: Ein Teilschritt bleibt gesperrt, bis seine Bedingung durch eine Werkzeugabfrage belegt erfüllt ist. Nutzt ein vorhandenes Gedächtnis (USMC), wenn vorhanden, und speichert sonst selbst in einer eigenen SQLite-Datei.",
   "package": null,
