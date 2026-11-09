@@ -15,7 +15,7 @@
   <a href="llms.txt"><img src="https://img.shields.io/badge/context-llms.txt%20ready-informational.svg" alt="llms.txt bereit"></a>
   <a href="https://github.com/ellmos-ai"><img src="https://img.shields.io/badge/ecosystem-ellmos--ai-blue.svg" alt="Ökosystem: ellmos-ai"></a>
   <a href="https://github.com/open-bricks"><img src="https://img.shields.io/badge/umbrella-open--bricks-indigo.svg" alt="Dach: open-bricks"></a>
-  <a href="PRIVATE.txt"><img src="https://img.shields.io/badge/status-private-yellow.svg" alt="Status: Privat"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/status-public-brightgreen.svg" alt="Status: Öffentlich"></a>
 </p>
 
 <p align="center"><a href="README.md">English</a> · <strong>Deutsch</strong></p>
@@ -25,8 +25,7 @@ Werkzeugabfrage **belegt** erfüllt ist. Gates überleben Session-Ende und Abbru
 
 Familie: `.ORCHESTRATION` · Art: `library` (CLI + Python-API) · Konsument: Skill `condition`
 
-Kanonische Quelle: privates Repository `https://github.com/ellmos-ai/condition-gates`.
-Dies ist keine Freigabe für eine öffentliche Veröffentlichung.
+Kanonische Quelle: `https://github.com/ellmos-ai/condition-gates`.
 
 ---
 
@@ -197,7 +196,7 @@ Das Modul garantiert plattformübergreifend folgende deterministische Laufzeit-I
 - **`INV-GATE-05` — Deterministischer CLI-Exit-Code-Vertrag**: Verbindliche Exit-Codes (`0` = Erfolg, `1` = Fachlicher Validierungsfehler, `2` = Gate nicht gefunden).
 - **`INV-GATE-06` — Maschinenlesbarer JSON-Vertrag**: Strikte Trennung von `meta`-Informationen und Nutzdaten. Erfolgreiche JSON-Daten auf `stdout`, Fehler auf `stderr`.
 - **`INV-GATE-07` — Trennung von Verwaltung und Bewertung**: Gates verwalten und protokollieren Vorbedingungen, die fachliche Auswertung obliegt dem aufrufenden Agenten oder Skill.
-- **`INV-GATE-08` — Privater Repository-Schutz**: Strikt geschützt durch `PRIVATE.txt`; keine unbefugten Veröffentlichungen, öffentlichen Mirrors oder Paket-Deployments.
+- **`INV-GATE-08` — Open-Source-MIT-Governance**: Lizenziert unter der MIT-Lizenz ohne externe Abhängigkeiten und mit vollständiger SBOM-Transparenz.
 
 ## Ökosystem und Geschwistermodule
 
